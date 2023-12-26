@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yxz.sys.mapper.GameMapper">
+    <select id="getByMyId" parameterType="Integer">
+        SELECT
+	      x_user_game.user_id,
+	      x_game.game_name
+        FROM
+       	  x_user_game,
+	      x_game
+        WHERE
+	      x_user_game.game_id = x_game.game_id
+    </select>
+
+    <select id="saveGame" parameterType="com.yxz.sys.entity.Game">
+        INSERT INTO x_game(game_id, game_name)
+        SELECT max(game_id) + 1, #{gameName} FROM x_game;
+    </select>
+
+    <select id="deleteGame" parameterType="Integer">
+        DELETE
+        FROM
+            x_game
+        WHERE
+            game_id = #{id}
+    </select>
+</mapper>

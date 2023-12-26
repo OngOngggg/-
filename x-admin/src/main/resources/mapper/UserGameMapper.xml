@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yxz.sys.mapper.UserGameMapper">
+    <select id ="mylist" parameterType="com.yxz.sys.entity.Search" resultType="com.yxz.sys.entity.UserGame">
+        SELECT
+            username,
+            game_name,
+            gameHour
+        FROM
+            x_user,
+            x_game,
+            x_user_game
+        WHERE
+            x_user.id = x_user_game.user_id
+          AND x_game.game_id = x_user_game.game_id
+          AND ( #{username} = '' OR x_user.username like concat('%',#{username},'%') )
+          AND ( #{gamename} = '' OR x_game.game_name like concat('%',#{gamename},'%') )
+    </select>
+
+    <select id="deleteByMyUg" parameterType="String">
+        DELETE
+        FROM
+            x_user_game
+        WHERE
+            user_id = (
+                SELECT
+                    id
+                FROM
+                    x_user
+                WHERE
+                    username = #{username}) and
+                game_id = (
+                SELECT
+                    game_id
+                FROM
+                    x_game
+                WHERE
+                    game_name = #{gamename})
+    </select>
+
+    <select id="updateUserGame" parameterType="com.yxz.sys.entity.UserGame">
+        UPDATE x_user_game
+        SET x_user_game.user_id = ( SELECT x_user.id FROM x_user WHERE x_user.username =#{username}),
+            x_user_game.game_id = ( SELECT x_game.game_id FROM x_game WHERE x_game.game_name = #{gamename}),
+            gameHour = #{gameHour}
+
+        WHERE
+                x_user_game.user_id = ( SELECT x_user.id FROM x_user WHERE x_user.username = #{b_username})
+          AND
+                x_user_game.game_id = ( SELECT x_game.game_id FROM x_game WHERE x_game.game_name = #{b_gamename})
+    </select>
+
+    <select id="saveUserGame" parameterType="com.yxz.sys.entity.UserGame">
+        INSERT INTO x_user_game(user_id,game_id,gameHour)
+        VALUES((SELECT x_user.id FROM x_user WHERE x_user.username = #{username}),
+               ( SELECT x_game.game_id FROM x_game WHERE x_game.game_name = #{gamename}),
+               #{gameHour} )
+    </select>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yxz.sys.mapper.UserMapper">
+    <select id = "getRoleNameByUserId" parameterType="Integer" resultType="String">
+        SELECT
+            b.game_name
+        FROM
+            x_user_game a,
+            x_game b
+        WHERE
+            a.game_id = b.game_id
+          AND a.user_id = #{userId}
+    </select>
+
+    <select id="deleteByMyId" parameterType="Integer">
+        DELETE
+        FROM
+	      x_user
+        WHERE
+	      x_user.id = #{userId};
+    </select>
+
+    <select id="updateByMyId" parameterType="com.yxz.sys.entity.User">
+        UPDATE x_user
+        SET x_user.username = #{username},x_user.phone=#{phone},x_user.status=#{status},x_user.email=#{email}
+        WHERE x_user.id = #{id}
+    </select>
+
+    <select id="saveMyId" parameterType="com.yxz.sys.entity.User">
+        INSERT INTO x_user ( username, password, phone, status, email )
+        VALUES
+	      (#{username},#{password},#{phone},#{status},#{email})
+    </select>
+
+</mapper>
